@@ -1,0 +1,26 @@
+name: Asciidoctor Build Workflow
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches:
+      - main
+  release:
+    types:
+      - published
+
+jobs:
+  adoc_build:
+    name: Build OG-Format
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: mkdir format_build
+    - name: Build OG-Format.html
+      uses: Analog-inc/asciidoctor-action@v1.2
+      with:
+        shellcommand: 'asciidoctor --verbose OG_Format.adoc -D format_build; cp -r figures format_build'
+    - name: Build cf-conventions.pdf
+      uses: Analog-inc/asciidoctor-action@v1.2
+      with:
+        shellcommand: 'asciidoctor-pdf --verbose -d book cf-conventions.adoc -D format_build'
